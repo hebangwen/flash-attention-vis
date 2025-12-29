@@ -2,24 +2,24 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Play, Pause, RotateCcw, SkipForward, Info, Database, Cpu, Grid3x3 } from 'lucide-react';
 
 const FlashAttentionDemo = () => {
-  // 配置参数
+  // Configuration parameters
   const [isPlaying, setIsPlaying] = useState(false);
-  const [step, setStep] = useState(0); // 0: 初始, 1: 外层循环开始, 2: 内层循环计算, 3: 更新输出
-  const [qIdx, setQIdx] = useState(-1); // 当前 Q 块索引
-  const [kvIdx, setKvIdx] = useState(-1); // 当前 KV 块索引
+  const [step, setStep] = useState(0); // 0: initial, 1: outer loop start, 2: inner loop compute, 3: update output
+  const [qIdx, setQIdx] = useState(-1); // current Q block index
+  const [kvIdx, setKvIdx] = useState(-1); // current KV block index
   const [speed, setSpeed] = useState(1000);
   
-  const numBlocks = 4; // 简化为 4x4 的分块演示
+  const numBlocks = 4; // simplified to 4x4 block demonstration
   
-  // 模拟数据状态
+  // simulated data state
   const [outputReady, setOutputReady] = useState(Array(numBlocks).fill(false));
-  // 记录 Score Map 中哪些块已经完成或正在处理
-  // 0: 未处理, 1: 正在处理, 2: 已完成
+  // track which blocks in Score Map are completed or being processed
+  // 0: unprocessed, 1: processing, 2: completed
   const [scoreMapState, setScoreMapState] = useState(
     Array(numBlocks).fill(0).map(() => Array(numBlocks).fill(0))
   );
 
-  // 动画逻辑
+  // animation logic
   useEffect(() => {
     let timer;
     if (isPlaying) {
@@ -32,19 +32,19 @@ const FlashAttentionDemo = () => {
 
   const handleNext = () => {
     if (qIdx === -1) {
-      // 开始动画
+      // start animation
       setQIdx(0);
       setKvIdx(0);
       setStep(1);
     } else if (step === 1) {
-      // 准备计算当前块
+      // prepare to compute current block
       setStep(2);
-      // 更新 Score Map 状态：当前块设为"正在处理"
+      // update Score Map state: set current block to "processing"
       const newState = [...scoreMapState];
       newState[qIdx][kvIdx] = 1;
       setScoreMapState(newState);
     } else if (step === 2) {
-      // 计算完一个 KV 块，标记为已完成
+      // finished computing one KV block, mark as completed
       const newState = [...scoreMapState];
       newState[qIdx][kvIdx] = 2;
       setScoreMapState(newState);
@@ -53,11 +53,11 @@ const FlashAttentionDemo = () => {
         setKvIdx(prev => prev + 1);
         setStep(1);
       } else {
-        // 完成了一行 Q 的扫描
+        // completed scanning one row of Q
         setStep(3);
       }
     } else if (step === 3) {
-      // 写入 Output
+      // write to Output
       const newOutputReady = [...outputReady];
       newOutputReady[qIdx] = true;
       setOutputReady(newOutputReady);
@@ -81,7 +81,7 @@ const FlashAttentionDemo = () => {
     setScoreMapState(Array(numBlocks).fill(0).map(() => Array(numBlocks).fill(0)));
   };
 
-  // 渲染矩阵块 (Q, K, V, O)
+  // render matrix blocks (Q, K, V, O)
   const renderMatrix = (type, highlightIdx, isVertical = true) => {
     return (
       <div className={`flex ${isVertical ? 'flex-col' : 'flex-row'} gap-1 p-2 bg-gray-50 rounded-lg border border-gray-200 shadow-sm`}>
@@ -102,7 +102,7 @@ const FlashAttentionDemo = () => {
     );
   };
 
-  // 渲染中心 Score Map 表格
+  // render center Score Map table
   const renderScoreMap = () => {
     return (
       <div className="flex flex-col items-center bg-white p-4 rounded-xl shadow-inner border border-slate-200">
@@ -129,8 +129,8 @@ const FlashAttentionDemo = () => {
           )}
         </div>
         <div className="flex gap-4 mt-3 text-[10px] text-slate-400">
-           <div className="flex items-center gap-1"><div className="w-2 h-2 bg-amber-400 rounded"></div> 正在计算</div>
-           <div className="flex items-center gap-1"><div className="w-2 h-2 bg-blue-100 rounded"></div> 已暂存</div>
+           <div className="flex items-center gap-1"><div className="w-2 h-2 bg-amber-400 rounded"></div> Computing</div>
+           <div className="flex items-center gap-1"><div className="w-2 h-2 bg-blue-100 rounded"></div> Staged</div>
         </div>
       </div>
     );
@@ -257,17 +257,17 @@ const FlashAttentionDemo = () => {
             <div>
               <div className="flex items-center gap-2 text-slate-700 font-bold mb-4">
                 <Info size={18} />
-                <span className="text-sm">计算统计</span>
+                <span className="text-sm">Computation Stats</span>
               </div>
               <div className="space-y-3">
                 <div className="bg-white p-2 rounded border border-slate-200">
-                  <p className="text-[10px] text-slate-400 uppercase font-bold">当前分块坐标</p>
+                  <p className="text-[10px] text-slate-400 uppercase font-bold">Current Block Coordinates</p>
                   <p className="text-lg font-mono font-bold text-slate-800">
                     {qIdx >= 0 && kvIdx >= 0 ? `(${qIdx}, ${kvIdx})` : '--'}
                   </p>
                 </div>
                 <div className="bg-white p-2 rounded border border-slate-200">
-                  <p className="text-[10px] text-slate-400 uppercase font-bold">HBM 写回次数</p>
+                  <p className="text-[10px] text-slate-400 uppercase font-bold">HBM Write-back Count</p>
                   <p className="text-lg font-mono font-bold text-emerald-600">
                     {outputReady.filter(Boolean).length} / {numBlocks}
                   </p>
@@ -276,7 +276,7 @@ const FlashAttentionDemo = () => {
             </div>
             
             <div className="mt-4">
-              <p className="text-[10px] text-slate-400 uppercase font-bold mb-1">演示速度</p>
+              <p className="text-[10px] text-slate-400 uppercase font-bold mb-1">Demo Speed</p>
               <input 
                 type="range" 
                 min="200" 
