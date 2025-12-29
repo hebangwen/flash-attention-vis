@@ -168,7 +168,10 @@ const FlashAttentionDemo = () => {
           
           {/* Column 1: Q */}
           <div className="col-span-2 flex flex-col items-center">
-            <span className="text-[10px] font-black mb-2 text-blue-600 uppercase tracking-widest bg-blue-50 px-2 py-1 rounded">Query (Q)</span>
+            <div className="text-[11px] font-black mb-3 text-blue-600 flex items-center gap-1.5 bg-blue-50 px-3 py-1.5 rounded-full border border-blue-100">
+              <Database size={12} />
+              Q ∈ ℝᴺˣᵈ
+            </div>
             {renderMatrix('Q', qIdx)}
           </div>
 
@@ -178,11 +181,17 @@ const FlashAttentionDemo = () => {
             {/* K & V Rows */}
             <div className="flex gap-8 justify-center w-full">
                <div className="flex flex-col items-center">
-                 <span className="text-[10px] font-black mb-2 text-purple-600 uppercase tracking-widest bg-purple-50 px-2 py-1 rounded">Key (K)</span>
+                 <div className="text-[11px] font-black mb-3 text-purple-600 flex items-center gap-1.5 bg-purple-50 px-3 py-1.5 rounded-full border border-purple-100">
+                   <Database size={12} />
+                   K ∈ ℝᴺˣᵈ
+                 </div>
                  {renderMatrix('K', kvIdx, false)}
                </div>
                <div className="flex flex-col items-center">
-                 <span className="text-[10px] font-black mb-2 text-pink-600 uppercase tracking-widest bg-pink-50 px-2 py-1 rounded">Value (V)</span>
+                 <div className="text-[11px] font-black mb-3 text-pink-600 flex items-center gap-1.5 bg-pink-50 px-3 py-1.5 rounded-full border border-pink-100">
+                   <Database size={12} />
+                   V ∈ ℝᴺˣᵈ
+                 </div>
                  {renderMatrix('V', kvIdx, false)}
                </div>
             </div>
@@ -225,7 +234,10 @@ const FlashAttentionDemo = () => {
 
           {/* Column 3: O */}
           <div className="col-span-2 flex flex-col items-center">
-            <span className="text-[10px] font-black mb-2 text-emerald-600 uppercase tracking-widest bg-emerald-50 px-2 py-1 rounded">Output (O)</span>
+            <div className="text-[11px] font-black mb-3 text-emerald-600 flex items-center gap-1.5 bg-emerald-50 px-3 py-1.5 rounded-full border border-emerald-100">
+              <Database size={12} />
+              O ∈ ℝᴺˣᵈ
+            </div>
             {renderMatrix('O', qIdx)}
           </div>
 
