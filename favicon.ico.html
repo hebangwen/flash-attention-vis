@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Favicon Generator</title>
+</head>
+<body>
+  <canvas id="canvas" width="32" height="32"></canvas>
+  <script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Create a simple favicon design
+    ctx.fillStyle = '#3B82F6';
+    ctx.fillRect(0, 0, 32, 32);
+
+    // Draw attention blocks
+    ctx.fillStyle = '#2563EB';
+    ctx.fillRect(4, 4, 6, 6);
+    ctx.fillRect(4, 12, 6, 6);
+    ctx.fillRect(4, 20, 6, 6);
+
+    ctx.fillStyle = '#7C3AED';
+    ctx.fillRect(13, 8, 6, 6);
+    ctx.fillRect(13, 16, 6, 6);
+
+    ctx.fillStyle = '#10B981';
+    ctx.fillRect(22, 4, 6, 6);
+    ctx.fillRect(22, 12, 6, 6);
+    ctx.fillRect(22, 20, 6, 6);
+
+    // Create download link
+    canvas.toBlob(function(blob) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'favicon.ico';
+      a.click();
+    }, 'image/x-icon');
+  </script>
+</body>
+</html>
