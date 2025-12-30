@@ -213,14 +213,20 @@ const FlashAttentionDemo = () => {
                 
                 {step >= 1 ? (
                   <div className="flex flex-col gap-2 w-full p-4 animate-in fade-in zoom-in duration-300">
-                      <div className={`p-2 rounded-lg text-center text-[10px] border shadow-sm transition-all ${step === 2 ? 'bg-blue-600 text-white border-blue-400' : 'bg-white text-slate-400'}`}>
-                         LOAD Q{qIdx}, K{kvIdx}, V{kvIdx}
+                      <div className={`p-2 rounded-lg text-center text-[10px] border shadow-sm transition-all ${step === 1 && kvIdx === 0 ? 'bg-blue-600 text-white border-blue-400' : 'bg-white text-slate-400'}`}>
+                         LOAD Q{qIdx}
+                      </div>
+                      <div className={`p-2 rounded-lg text-center text-[10px] border shadow-sm transition-all ${step === 1 ? 'bg-purple-600 text-white border-purple-400' : 'bg-white text-slate-400'}`}>
+                         LOAD KV{kvIdx}
                       </div>
                       <div className={`p-2 rounded-lg text-center text-[10px] border shadow-sm transition-all ${step === 2 ? 'bg-amber-500 text-white border-amber-300' : 'bg-white text-slate-400'}`}>
                          S = Q{qIdx} @ K{kvIdx}ᵀ
                       </div>
                       <div className={`p-2 rounded-lg text-center text-[10px] border shadow-sm transition-all ${step === 2 ? 'bg-emerald-500 text-white border-emerald-300' : 'bg-white text-slate-400'}`}>
                          Update O{qIdx} (Online Softmax)
+                      </div>
+                      <div className={`p-2 rounded-lg text-center text-[10px] border shadow-sm transition-all ${step === 3 ? 'bg-orange-600 text-white border-orange-400' : 'bg-white text-slate-400'}`}>
+                         STORE O{qIdx} to HBM
                       </div>
                   </div>
                 ) : (
@@ -256,12 +262,13 @@ const FlashAttentionDemo = () => {
             <div className="space-y-1">
               <div className={qIdx !== -1 ? 'text-slate-600' : 'text-slate-200'}>// Divide Q, K, V into blocks of size Br, Bc</div>
               <div className={`${step === 1 || step === 2 ? 'text-blue-400 bg-blue-500/10 -mx-2 px-2' : ''}`}>For each block <span className="text-blue-300 font-bold">Q[{qIdx >= 0 ? qIdx : 'i'}]</span> in Q:</div>
+              <div className={`${step === 1 && kvIdx === 0 ? 'text-blue-400 bg-blue-500/10 -mx-2 px-2' : ''} ml-4`}>1. Load <span className="text-blue-300 font-bold">Q[{qIdx >= 0 ? qIdx : 'i'}]</span> to SRAM</div>
               <div className={`${step === 2 ? 'text-amber-400 bg-amber-500/10 -mx-2 px-2' : ''} ml-4`}>For each block <span className="text-amber-300 font-bold">K[{kvIdx >= 0 ? kvIdx : 'j'}], V[{kvIdx >= 0 ? kvIdx : 'j'}]</span>:</div>
-              <div className={`${step === 2 ? 'text-white' : ''} ml-8 italic`}>1. Load to SRAM (Low IO Cost)</div>
-              <div className={`${step === 2 ? 'text-white' : ''} ml-8 italic`}>2. S = Q{qIdx >= 0 ? qIdx : 'i'} @ K{kvIdx >= 0 ? kvIdx : 'j'}ᵀ</div>
-              <div className={`${step === 2 ? 'text-white' : ''} ml-8 italic`}>3. Update Local Softmax Stats (m, ℓ)</div>
-              <div className={`${step === 2 ? 'text-white' : ''} ml-8 italic`}>4. Update Partial Output O{qIdx >= 0 ? qIdx : 'i'}</div>
-              <div className={`${step === 3 ? 'text-emerald-400 bg-emerald-500/10 -mx-2 px-2' : ''} ml-4`}>Write block <span className="text-emerald-300 font-bold">O{qIdx >= 0 ? qIdx : 'i'}</span> to HBM (Final Output)</div>
+              <div className={`${step === 2 ? 'text-white' : ''} ml-8 italic`}>2. Load KV to SRAM (Low IO Cost)</div>
+              <div className={`${step === 2 ? 'text-white' : ''} ml-8 italic`}>3. S = Q{qIdx >= 0 ? qIdx : 'i'} @ K{kvIdx >= 0 ? kvIdx : 'j'}ᵀ</div>
+              <div className={`${step === 2 ? 'text-white' : ''} ml-8 italic`}>4. Update Local Softmax Stats (m, ℓ)</div>
+              <div className={`${step === 2 ? 'text-white' : ''} ml-8 italic`}>5. Update Partial Output O{qIdx >= 0 ? qIdx : 'i'}</div>
+              <div className={`${step === 3 ? 'text-orange-400 bg-orange-500/10 -mx-2 px-2' : ''} ml-4`}>6. Store block <span className="text-orange-300 font-bold">O{qIdx >= 0 ? qIdx : 'i'}</span> to HBM (Final Output)</div>
             </div>
           </div>
 
